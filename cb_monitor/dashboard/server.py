@@ -1315,25 +1315,10 @@ def _build_fuyao_dragons():
     cache = state.get_fuyao_pool()
     items = cache.get('items', [])
 
-    # ── 缓存空时: 尝试直接拉取 (gen_live_html 场景 / 调度器429漏掉时) ──
+    # 仪表盘只读缓存，不触发外部 API (调度器每90s刷新, 避免429限流)
     if not items:
-        stale_reason = cache.get('_stale_reason', '')
-        logger.info(f"Fuyao 涨停池缓存为空 (age={cache.get('age', 0)}s, reason={stale_reason}), 尝试直接拉取...")
-        try:
-            from core.fuyao_client import get_fuyao_client
-            fc = get_fuyao_client()
-            pool = fc.get_limit_up_pool(sort_field="limit_up_time", sort_dir="asc", size=200)
-            if pool:
-                items = pool.get('data', {}).get('item', [])
-                if items:
-                    state.update_fuyao_pool(items, ts=time.time())
-                    logger.info(f"Fuyao 直接拉取成功: {len(items)} 只涨停 (当日)")
-                else:
-                    logger.warning("Fuyao 直接拉取返回空列表")
-            else:
-                logger.warning("Fuyao 直接拉取返回 None (HTTP 429/限流)")
-        except Exception as e:
-            logger.warning(f"Fuyao 直接拉取异常: {e}")
+        stale = cache.get('_stale_reason', cache.get('age', ''))
+        logger.debug(f"Fuyao 涨停池缓存为空 ({stale}) — 等待调度器刷新")
 
     if not items:
         return [], []
@@ -1743,19 +1728,7 @@ def api_sector_flow():
         pool_cache = state.get_fuyao_pool()
         items = pool_cache.get('items', [])
         
-        # 调度器缓存为空时, 尝试一次直接 Fuyao 调取 (gen_live_html 场景)
-        if not items:
-            try:
-                from core.fuyao_client import get_fuyao_client
-                fc = get_fuyao_client()
-                pool = fc.get_limit_up_pool(size=200)
-                if pool:
-                    items = pool.get('data', {}).get('item', [])
-                    if items:
-                        state.update_fuyao_pool(items, ts=time.time())
-                        logger.info(f"Fuyao 直接拉取: {len(items)} 只涨停 (当日)")
-            except Exception as e:
-                logger.debug(f"Fuyao 直接拉取失败: {e}")
+        # 仪表盘只读缓存，不触发外部 API (调度器每90s刷新)
         
         if items and len(items) >= 5:
             flows = _build_fuyao_sector_flows(items)

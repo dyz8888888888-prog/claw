@@ -70,8 +70,8 @@ class PaperAccount:
 
     def get_available_budget(self, mode: TradeMode) -> float:
         limits = {
-            TradeMode.ATTACK: 0.025,
-            TradeMode.PROBE: 0.020,
+            TradeMode.ATTACK: 2.5,
+            TradeMode.PROBE: 2.0,
             TradeMode.DEFENSE: 1.5,
             TradeMode.DISABLED: 0.0,
         }

@@ -49,6 +49,14 @@ class SidecarRunner:
     @staticmethod
     def _convert(snap: Any, ts: float) -> MarketSnapshot:
         """将旧 Snapshot 对象转为新 MarketSnapshot"""
+        buy = float(snap.buy or 0)
+        sell = float(snap.sell or 0)
+        # 计算点差 (与 SnapshotBuilder 公式一致)
+        if buy > 0 and sell > 0:
+            cb_spread_pct = (sell - buy) / buy * 100
+        else:
+            cb_spread_pct = 0.0
+
         return MarketSnapshot(
             ts=ts,
             cb_code=str(snap.code or ""),
@@ -58,10 +66,11 @@ class SidecarRunner:
             cb_open=float(getattr(snap, "open", 0) or 0),
             cb_high=float(snap.high or 0),
             cb_low=float(snap.low or 0),
-            cb_bid1=float(snap.buy or 0),
-            cb_ask1=float(snap.sell or 0),
+            cb_bid1=buy,
+            cb_ask1=sell,
             cb_bid1_vol=int(getattr(snap, "buy_volume", 0) or 0),
             cb_ask1_vol=int(getattr(snap, "sell_volume", 0) or 0),
+            cb_spread_pct=cb_spread_pct,
             cb_amount=float(snap.amount or 0),
             cb_volume_ratio=float(getattr(snap, "volume_ratio", 0) or 0),
             stock_code=str(getattr(snap, "stock_code", "")),
@@ -190,7 +199,17 @@ class SidecarRunner:
                 recs = self._selector.rank(all_intents, new_snaps, self._ctx)
                 result["candidates"] = len(recs)
 
-            # 5. 纸面交易引擎接管: 虚拟持仓管理 + 模拟成交 + 记账
+                # 按 Selector 排序重排 intents (让 paper_trader 按优先进场)
+                intent_map = {(i.cb_code, i.strategy_id): i for i in all_intents}
+                ranked = []
+                for r in recs:
+                    key = (r.cb_code, r.strategy_id)
+                    if key in intent_map:
+                        ranked.append(intent_map.pop(key))
+                ranked.extend(intent_map.values())  # 未匹配的放末尾
+                all_intents = ranked
+
+            # 5. 纸面交易引擎接管
             trader_result = self._paper_trader.run(
                 self._ctx, new_snaps, all_intents, recs,
             )
