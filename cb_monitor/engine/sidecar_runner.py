@@ -22,6 +22,7 @@ from strategies.volume_follow import VolumeFollowStrategy
 from engine.selector import Selector
 from engine.risk_engine import RiskEngine, RiskResult
 from engine.state_machine import TradingStateMachine
+from engine.paper_trader import PaperTrader
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,7 @@ class SidecarRunner:
         self._selector = Selector()
         self._risk_engine = RiskEngine()
         self._state_machine = TradingStateMachine()
+        self._paper_trader = PaperTrader()       # 纸面交易引擎
         self._strategies = [
             VolumeFollowStrategy(),
         ]
@@ -163,74 +165,69 @@ class SidecarRunner:
             result["trade_mode"] = self._ctx.trade_mode.value
             result["enabled_strategies"] = list(self._ctx.enabled_strategies)
 
-            # 3. 逐策略评估
+            # 3. 逐策略评估 (使用纸面账户的真实状态)
+            paper_acct = self._paper_trader.account.to_dict()
             all_intents: list[TradeIntent] = []
             for strat in self._strategies:
                 if not strat.enabled(self._ctx):
                     continue
                 for code, snap in new_snaps.items():
                     intent = strat.evaluate(snap, self._ctx, {
-                        "current_positions": [],
-                        "today_trades": 0,
-                        "today_pnl_pct": 0.0,
-                        "consecutive_losses": 0,
+                        "current_positions": self._paper_trader.active_positions,
+                        "today_trades": paper_acct["today_trades"],
+                        "today_pnl_pct": paper_acct["daily_pnl_pct"],
+                        "consecutive_losses": paper_acct["consecutive_losses"],
                     })
                     if intent:
                         all_intents.append(intent)
 
             result["intents"] = len(all_intents)
 
-            # 4. Selector 排序 + 风控 + 状态机
-            risk_allows = True  # 默认值
-            top_risk_result: RiskResult | None = None
+            # 4. Selector 排序
+            recs: list[CandidateRecord] = []
             if all_intents:
                 recs = self._selector.rank(all_intents, new_snaps, self._ctx)
                 result["candidates"] = len(recs)
 
-                # 风控检查 top 候选
-                top = all_intents[0]
-                top_risk_result = self._risk_engine.check_new_trade(
-                    top, self._ctx,
-                    account_ctx={
-                        "daily_pnl_pct": 0.0, "consecutive_losses": 0,
-                        "used_cb_trade_count": {}, "available_risk_budget": 1.0,
-                        "now_ts": now_ts,
-                    },
-                    positions=[],
-                )
-                risk_allows = top_risk_result.status == RiskCheck.ALLOW
-                result["risk_top1"] = top_risk_result.status.value
-                result["risk_reason"] = "|".join(top_risk_result.reason_codes) if top_risk_result.reason_codes else ""
-                result["top_candidate"] = {
-                    "code": top.cb_code, "score": top.score,
-                    "reason": top.reason_text,
-                }
+            # 5. 纸面交易引擎接管: 虚拟持仓管理 + 模拟成交 + 记账
+            trader_result = self._paper_trader.run(
+                self._ctx, new_snaps, all_intents, recs,
+            )
 
-                # ── 写入候选记录到 TradeLedger ──
+            result["trades_opened"] = trader_result.get("trades_opened", 0)
+            result["trades_closed"] = trader_result.get("trades_closed", 0)
+            result["paper_positions"] = trader_result.get("positions", 0)
+            result["paper_account"] = trader_result.get("account", {})
+            result["blocked"] = trader_result.get("blocked", "")
+            result["top_candidate"] = {
+                "code": all_intents[0].cb_code, "score": all_intents[0].score,
+                "reason": all_intents[0].reason_text,
+            } if all_intents else None
+
+            # 6. 将候选写入 TradeLedger (纸面交易内部已记，此处补记被拒原因)
+            if recs:
                 try:
                     from ledger.trade_log import TradeLedger
                     ledger = TradeLedger("data/trade_ledger.db")
                     for r in recs:
                         r.market_regime = self._ctx.regime.value
                         r.trade_mode = self._ctx.trade_mode.value
-                        # 标记风控被拦的候选
-                        if top_risk_result and r.cb_code == top.cb_code:
-                            r.selected = risk_allows
-                            if not risk_allows:
-                                r.rejected_by = top_risk_result.reason_codes
                     ledger.log_candidates(recs)
                     ledger.close()
-                except Exception as e:
-                    logger.warning(f"侧车记账失败: {e}")
+                except Exception:
+                    pass
 
-            # 5. 更新状态机 (使用真实风控结果)
+            # 7. 更新状态机
             has_candidates = len(all_intents) > 0
+            has_positions = self._paper_trader.open_position_count > 0
+            can_open = trader_result.get("blocked", "") == ""
+
             self._state_machine.transition(
                 now_ts, self._ctx,
-                has_candidates=has_candidates,
-                has_open_positions=False,
-                risk_allows_new_trade=risk_allows,  # 真实风控结果
-                exit_required=False,
+                has_candidates=has_candidates and can_open,
+                has_open_positions=has_positions,
+                risk_allows_new_trade=can_open,
+                exit_required=trader_result.get("trades_closed", 0) > 0,
             )
             result["machine_state"] = self._state_machine.current.value
             result["state_reason"] = self._state_machine.reason
