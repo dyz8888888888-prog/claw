@@ -1868,6 +1868,40 @@ def api_history():
     return jsonify(history)
 
 
+@app.route('/api/sidecar')
+def api_sidecar():
+    """新架构旁路运行状态 (只读, 不触发计算)"""
+    sc = getattr(state, 'sidecar_state', None) or {}
+    return jsonify(sc)
+
+
+@app.route('/api/compare')
+def api_compare():
+    """新旧系统对比: 同 tick 下旧信号 vs 新管道评估"""
+    with state._lock:
+        old_sigs = state.signal_history[-20:] if state.signal_history else []
+        old_count = len(state.snapshots)
+        last_update = state.last_update
+    sc = getattr(state, 'sidecar_state', None) or {}
+    return jsonify({
+        'ts': time.time(),
+        'last_update': last_update,
+        'old': {
+            'snapshot_count': old_count,
+            'recent_signals': len(old_sigs),
+        },
+        'new': {
+            'regime': sc.get('regime', '未知'),
+            'trade_mode': sc.get('trade_mode', '未知'),
+            'enabled_strategies': sc.get('enabled_strategies', []),
+            'machine_state': sc.get('machine_state', 'disabled'),
+            'intents': sc.get('intents', 0),
+            'candidates': sc.get('candidates', 0),
+            'top_candidate': sc.get('top_candidate'),
+        },
+        'new_status': sc.get('status', 'no_data'),
+    })
+
 def start_server(host: str = '0.0.0.0', port: int = 5000):
     """启动 Flask 服务 (阻塞) — signal 由 main.py 主线程处理, 此处用 atexit 兜底"""
     atexit.register(_cleanup_tdx)

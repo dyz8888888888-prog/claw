@@ -70,6 +70,8 @@ class Scheduler:
         self.signal_accuracy = SignalAccuracyTracker()
         self.signal_accuracy.load_recent(days=5)
 
+        # 新架构旁路运行器 (与旧系统并行, 不影响旧链路)
+        self._sidecar = None  # 惰性初始化
         # 选债池每日刷新标记 (开盘前刷新一次, 交易日有效)
         self._last_cov_date: str = ""
 
@@ -400,6 +402,16 @@ class Scheduler:
 
         # 后验统计 tick: 更新所有活跃信号的追踪数据
         backtest_tracker.tick(snapshots)
+
+        # ── 新架构旁路: 用新管道并行评估 (不干扰旧结果) ──
+        try:
+            if self._sidecar is None:
+                from engine.sidecar_runner import SidecarRunner
+                self._sidecar = SidecarRunner()
+            sidecar_result = self._sidecar.run()
+            state.sidecar_state = sidecar_result  # 写入 shared_state 供仪表盘读取
+        except Exception:
+            pass  # 旁路失败不影响主链路
 
         # 更新共识追踪器
         if consensus_mod.consensus_tracker:
