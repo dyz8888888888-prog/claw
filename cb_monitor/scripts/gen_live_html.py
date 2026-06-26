@@ -10,6 +10,7 @@ APIS = {
     "sector_flow": f"{BASE}/api/sector_flow",
     "sentiment_detail": f"{BASE}/api/sentiment_detail",
     "backtest": f"{BASE}/api/backtest",
+    "sidecar": f"{BASE}/api/sidecar",
 }
 OUTPUT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'outputs', 'deploy', 'index.html')
 
@@ -157,6 +158,7 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
   <div class="tab" onclick="switchPage('dragons')">板块</div>
   <div class="tab" onclick="switchPage('sentiment')">情绪</div>
   <div class="tab" onclick="switchPage('review')">复盘</div>
+  <div class="tab" onclick="switchPage('sidecar')" style="border-left:1px solid var(--bd)">新架构</div>
 </div>
 
 <!-- 战情页 -->
@@ -208,6 +210,22 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
   <div id="reviewTable"><div class="empty">暂无</div></div>
 </div>
 
+<!-- 新架构页 -->
+<div class="page" id="sidecarPage">
+  <div class="sec-title">新架构状态</div>
+  <div class="bar" style="margin:4px 0">
+    <span style="font-size:11px" id="scRegime">--</span>
+    <span style="font-size:9px;color:var(--dim);margin-left:8px" id="scMode"></span>
+    <span style="font-size:9px;color:var(--dim);margin-left:auto" id="scState"></span>
+  </div>
+  <div class="sec-title">启用策略</div>
+  <div id="scStrategies" style="font-size:11px;margin:2px 0 6px"></div>
+  <div class="sec-title">候选标的</div>
+  <div id="scCandidates" style="font-size:11px"><div class="empty">暂无</div></div>
+  <div class="sec-title">流程摘要</div>
+  <div id="scSummary" style="font-size:10px;color:var(--dim)"></div>
+</div>
+
 <div class="refresh-info">15秒快照 · 作战台静态版</div>
 
 <script>
@@ -218,7 +236,8 @@ var EMBED = {
   dragons: ''' + embeds["dragons"] + r''',
   sector_flow: ''' + embeds["sector_flow"] + r''',
   sentiment: ''' + embeds["sentiment_detail"] + r''',
-  backtest: ''' + embeds["backtest"] + r'''
+  backtest: ''' + embeds["backtest"] + r''',
+  sidecar: ''' + embeds["sidecar"] + r'''
 };
 var LV = {S:'#ef4444',A:'#f59e0b',B:'#3b82f6',C:'#a855f7',D:'#6b7280'};
 
@@ -226,17 +245,19 @@ function esc(s){return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
 function switchPage(p){
   document.querySelectorAll('.tab').forEach(function(t){
-    var m={battle:'战情',dragons:'板块',sentiment:'情绪',review:'复盘'};
+    var m={battle:'战情',dragons:'板块',sentiment:'情绪',review:'复盘',sidecar:'新架构'};
     t.classList.toggle('active',t.textContent===m[p]);
   });
   document.getElementById('battlePage').classList.toggle('active',p==='battle');
   document.getElementById('dragonsPage').classList.toggle('active',p==='dragons');
   document.getElementById('sentimentPage').classList.toggle('active',p==='sentiment');
   document.getElementById('reviewPage').classList.toggle('active',p==='review');
+  document.getElementById('sidecarPage').classList.toggle('active',p==='sidecar');
   if(p==='battle') renderBattle();
   if(p==='dragons') renderDragons();
   if(p==='sentiment') renderSentiment();
   if(p==='review') renderReview();
+  if(p==='sidecar') renderSidecar();
 }
 
 // ==================== 战情 Tab ====================
@@ -472,6 +493,33 @@ function renderReview(){
       '<span class="'+pnlCls+'" style="font-weight:600">'+(a.current_pnl>0?'+':'')+a.current_pnl+'%</span> '+
       '<span style="color:var(--dim);font-size:9px">触'+a.trigger_price+'峰'+a.peak_price+'</span></div>';
   }).join(''):(total?'<div class="empty">无活跃追踪</div>':'<div class="empty">暂无</div>');
+}
+
+// ==================== 新架构 Tab ====================
+function renderSidecar(){
+  var sc = EMBED.sidecar || {};
+  var err = sc.error;
+  if(err){document.getElementById('scSummary').innerHTML='<span style=color:var(--red)>'+esc(err)+'</span>';return}
+
+  document.getElementById('scRegime').textContent=(sc.regime||'--');
+  document.getElementById('scRegime').style.color=sc.regime==='ebb'||sc.regime==='freeze'?'var(--green)':'var(--red)';
+  document.getElementById('scMode').textContent='| 模式:'+(sc.trade_mode||'--');
+  document.getElementById('scState').textContent='状态机:'+(sc.machine_state||'--')+' '+(sc.state_reason||'');
+
+  var strats = sc.enabled_strategies || [];
+  document.getElementById('scStrategies').innerHTML=strats.length?strats.map(function(s){
+    return '<span style=background:var(--bg);padding:1px 6px;border-radius:3px;margin:0 2px;font-size:10px>'+esc(s)+'</span>';
+  }).join(''):'<span style=color:var(--dim)>无</span>';
+
+  var top = sc.top_candidate;
+  var candHtml = top?'<div style=margin:2px 0><b>'+esc(top.code||'')+'</b> <span style=color:var(--blue)>'+top.score+'分</span> '+esc(top.reason||'')+'</div>':'<div class=empty>暂无候选</div>';
+  document.getElementById('scCandidates').innerHTML=candHtml;
+
+  var sum = [];
+  sum.push('intents:'+(sc.intents||0)+' candidates:'+(sc.candidates||0));
+  sum.push('risk:'+(sc.risk_top1||'--')+(sc.risk_reason?' ('+esc(sc.risk_reason)+')':''));
+  sum.push('status:'+(sc.status||'--'));
+  document.getElementById('scSummary').innerHTML=sum.join(' | ');
 }
 
 // Init: render current tab
