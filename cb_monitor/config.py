@@ -69,7 +69,9 @@ class SignalConfig(_ConfigBase):
     concept_weight_enabled: bool = True       # 概念热度加权
     concept_resonance_threshold: float = 2.0  # 板块共振阈
     concept_lonewolf_threshold: float = 0.5   # 孤狼阈
-    concept_map_path: str = 'C:/Users/DYZ/WorkBuddy/Claw/可转债日报/cb_concept_map.json'
+    concept_map_path: str = os.environ.get('CONCEPT_MAP_PATH', 
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                     '..', '可转债日报', 'cb_concept_map.json'))
     sector_limit_up_threshold: float = 9.5
     sector_limit_up_20: float = 19.5
     diffusion_dragon_stock_min: float = 5.0     # 降低阈值, 温和市也能触发 (原7.0)

@@ -219,12 +219,8 @@ def _build_battle_data():
     sentiment_phase = sentiment_detail.get('phase', 'active')
     market_ms = SENTIMENT_TO_MARKET.get(sentiment_phase, 'ferment')
 
-    # 写入共享状态 (替换旧的 MarketStateClassifier)
-    state.market_state = {
-        'state': market_ms,
-        'state_cn': sentiment_detail.get('phase_cn', '活跃'),
-        'source': 'sentiment_engine',
-    }
+    # 市场状态由调度器统一写入，仪表盘只读
+    # (不再写 state.market_state，避免 HTTP 请求期覆盖调度器计算结果)
 
     # 构建简版 sentiment (战情顶部标签)
     pool_up = sentiment_detail.get('indicators', {}).get('pool_up', 0)

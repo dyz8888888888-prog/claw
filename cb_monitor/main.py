@@ -148,7 +148,13 @@ def run_monitor():
     signal.signal(signal.SIGTERM, _on_shutdown)
 
     # 启动仪表盘 Web 服务 (后台线程)
-    dash_host = CONFIG.get('dashboard', {}).get('host', None) or os.environ.get('DASHBOARD_HOST', '0.0.0.0')
+    # 安全默认值: 仅本机可访问。显式设置 DASHBOARD_HOST=0.0.0.0 才开放局域网
+    dash_host = CONFIG.get('dashboard', {}).get('host', None) or os.environ.get('DASHBOARD_HOST', '127.0.0.1')
+    if dash_host != '127.0.0.1' and not os.environ.get('DASHBOARD_TOKEN'):
+        import logging
+        logging.getLogger(__name__).warning(
+            f"仪表盘绑定 {dash_host} 但未设 DASHBOARD_TOKEN — 存在未授权访问风险"
+        )
     dash_port = CONFIG.get('dashboard', {}).get('port', 5000)
     flask_thread = threading.Thread(
         target=start_server,
