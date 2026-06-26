@@ -42,7 +42,7 @@ class VolumeFollowStrategy(StrategyBase):
 
     strategy_id = "volume_follow"
     strategy_version = "0.1.0"
-    holding_mode = HoldingMode.INTRADAY_FLAT.value
+    holding_mode = HoldingMode.INTRADAY_FLAT   # 枚举，落库时再 .value
 
     def __init__(self, params: VolumeFollowParams | None = None) -> None:
         self.params = params or VolumeFollowParams()

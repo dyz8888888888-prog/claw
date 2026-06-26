@@ -1,6 +1,7 @@
 # 可转债作战台 — 自动刷新执行记录
 
 ## 最近执行
+- **2026-06-27 02:30**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (25571 bytes)，ambush=0 sell=0, dragons=0, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
 - **2026-06-27 01:33**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (25571 bytes)，ambush=0 sell=0, dragons=0, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
 - **2026-06-27 00:36**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (25571 bytes)，ambush=0 sell=0, dragons=0, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
 - **2026-06-26 23:39**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (37148 bytes)，ambush=0 sell=0, dragons=11, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)

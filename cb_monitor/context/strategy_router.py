@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 
-from domain.enums import Regime
+from domain.enums import Regime, TradeMode
 from domain.models import MarketContext
 
 
@@ -30,7 +30,6 @@ class StrategyRouter:
         regime_ids = self.REGIME_MAP.get(market_ctx.regime, ())
 
         # 防守/暂停日强制禁止隔夜策略
-        from domain.enums import TradeMode
         if market_ctx.trade_mode in (TradeMode.DEFENSE, TradeMode.DISABLED):
             # 过滤掉隔夜策略
             overnight_strategies = {"tailwash_overnight"}
