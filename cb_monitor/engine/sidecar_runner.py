@@ -42,6 +42,7 @@ class SidecarRunner:
         ]
         self._ctx: MarketContext | None = None
         self._last_refresh_ts: float = 0.0
+        self._candidate_last_ts: dict[str, float] = {}  # 去重: (code+strategy) → last_ts
 
     # ── 旧快照 → 新 MarketSnapshot 适配 ───
 
@@ -204,15 +205,24 @@ class SidecarRunner:
                 "reason": all_intents[0].reason_text,
             } if all_intents else None
 
-            # 6. 将候选写入 TradeLedger (纸面交易内部已记，此处补记被拒原因)
+            # 6. 将候选写入 TradeLedger (按 code+strategy 每分钟去重)
             if recs:
                 try:
                     from ledger.trade_log import TradeLedger
                     ledger = TradeLedger("data/trade_ledger.db")
+                    dedup_recs = []
                     for r in recs:
+                        key = f"{r.cb_code}|{r.strategy_id}"
+                        last_ts = self._candidate_last_ts.get(key, 0)
+                        # 60秒内同一候选不重复写
+                        if now_ts - last_ts < 60:
+                            continue
+                        self._candidate_last_ts[key] = now_ts
                         r.market_regime = self._ctx.regime.value
                         r.trade_mode = self._ctx.trade_mode.value
-                    ledger.log_candidates(recs)
+                        dedup_recs.append(r)
+                    if dedup_recs:
+                        ledger.log_candidates(dedup_recs)
                     ledger.close()
                 except Exception:
                     pass

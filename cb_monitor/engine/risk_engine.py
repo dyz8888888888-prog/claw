@@ -15,10 +15,10 @@ from domain.models import MarketContext, Position, TradeIntent
 
 @dataclass(slots=True)
 class RiskLimits:
-    """风控硬边界 — 按模式有不同默认值"""
+    """风控硬边界 — 按模式有不同默认值。百分数点: 2.0 = 2%"""
     max_positions: int = 2
     max_single_position_weight: float = 0.5         # 单仓最大占比
-    max_daily_loss_pct: float = 0.02                # 单日最大亏损2%
+    max_daily_loss_pct: float = 2.0                 # 单日最大亏损 2%
     max_consecutive_losses: int = 3                  # 连亏上限
     per_cb_daily_trades: int = 1                     # 同债单日最多交易次数
     cooldown_minutes_after_loss: int = 15            # 亏损后冷却分钟
@@ -41,10 +41,10 @@ class RiskEngine:
     # ── 按模式的限制覆盖 ──
 
     MODE_LIMITS = {
-        TradeMode.ATTACK:   {"max_positions": 2, "max_daily_loss_pct": 0.025, "allow_overnight": True},
-        TradeMode.PROBE:    {"max_positions": 1, "max_daily_loss_pct": 0.020, "allow_overnight": False},
-        TradeMode.DEFENSE:  {"max_positions": 1, "max_daily_loss_pct": 0.015, "allow_overnight": False},
-        TradeMode.DISABLED: {"max_positions": 0, "max_daily_loss_pct": 0,    "allow_overnight": False},
+        TradeMode.ATTACK:   {"max_positions": 2, "max_daily_loss_pct": 2.5, "allow_overnight": True},
+        TradeMode.PROBE:    {"max_positions": 1, "max_daily_loss_pct": 2.0, "allow_overnight": False},
+        TradeMode.DEFENSE:  {"max_positions": 1, "max_daily_loss_pct": 1.5, "allow_overnight": False},
+        TradeMode.DISABLED: {"max_positions": 0, "max_daily_loss_pct": 0,   "allow_overnight": False},
     }
 
     def _mode_limits(self, mode: TradeMode) -> dict:
@@ -166,13 +166,13 @@ class RiskEngine:
         consecutive_losses: int,
         last_5day_pnl_pct: float,
     ) -> TradeMode:
-        """根据账户状态推荐今日交易模式"""
+        """根据账户状态推荐今日交易模式。百分数点: -3.0 = -3%"""
         if consecutive_losses >= self.limits.max_consecutive_losses:
             return TradeMode.DISABLED
-        if last_5day_pnl_pct < -0.03 and consecutive_losses >= 2:
+        if last_5day_pnl_pct < -3.0 and consecutive_losses >= 2:
             return TradeMode.DEFENSE
-        if today_pnl_pct < -0.01 or consecutive_losses >= 1:
+        if today_pnl_pct < -1.0 or consecutive_losses >= 1:
             return TradeMode.PROBE
-        if last_5day_pnl_pct > 0.02 and consecutive_losses == 0:
+        if last_5day_pnl_pct > 2.0 and consecutive_losses == 0:
             return TradeMode.ATTACK
         return TradeMode.PROBE

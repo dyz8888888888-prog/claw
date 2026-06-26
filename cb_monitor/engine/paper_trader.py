@@ -72,10 +72,10 @@ class PaperAccount:
         limits = {
             TradeMode.ATTACK: 0.025,
             TradeMode.PROBE: 0.020,
-            TradeMode.DEFENSE: 0.015,
+            TradeMode.DEFENSE: 1.5,
             TradeMode.DISABLED: 0.0,
         }
-        max_loss = limits.get(mode, 0.02)
+        max_loss = limits.get(mode, 2.0)
         used = abs(min(self.daily_pnl_pct, 0))
         return max(0, max_loss - used)
 
@@ -176,14 +176,8 @@ class PaperTrader:
             # 更新浮盈浮亏
             self.position_manager.update_marks(pos, snap.cb_price)
 
-            # 使用策略对应的退出规则 (目前只有 volume_follow)
-            from execution.exit_rules import ExitRules
-            action = ExitRules.for_volume_follow(pos, snap, {
-                "stop_loss_pct": pos.stop_loss_pct,
-                "take_profit_pct": pos.take_profit_pct,
-                "trail_drawdown_pct": pos.trailing_drawdown_pct,
-                "max_hold_seconds": 300,
-            })
+            # 按策略分派退出规则
+            action = self._dispatch_exit(pos, snap)
 
             if action[0] == "exit":
                 # 模拟卖出
@@ -289,6 +283,29 @@ class PaperTrader:
             "entry_failed": entry_failed,
             "account": self.account.to_dict(),
         }
+
+    def _dispatch_exit(self, pos: Position, snap: MarketSnapshot) -> tuple[str, str]:
+        """按策略ID分派退出规则"""
+        from execution.exit_rules import ExitRules
+
+        sid = pos.strategy_id
+        params = {
+            "stop_loss_pct": pos.stop_loss_pct,
+            "take_profit_pct": pos.take_profit_pct,
+            "trail_drawdown_pct": pos.trailing_drawdown_pct,
+            "max_hold_seconds": 300,
+        }
+
+        if sid == "volume_follow":
+            return ExitRules.for_volume_follow(pos, snap, params)
+        elif sid == "board_spillover":
+            # 封板溢出: 在 ExitRules 加 for_board_spillover 后启用
+            return ExitRules.for_volume_follow(pos, snap, params)  # 临时代用
+        elif sid == "tailwash_overnight":
+            # 尾盘隔夜: 用 overnight 检查
+            return ExitRules.for_volume_follow(pos, snap, {"max_hold_seconds": 86400, **params})
+        else:
+            return ExitRules.for_volume_follow(pos, snap, params)
 
     def start_new_day(self) -> None:
         """新交易日重置"""
