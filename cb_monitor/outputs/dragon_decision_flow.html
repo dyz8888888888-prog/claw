@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>龙头决策参与链路</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Microsoft YaHei',sans-serif;background:#0f1729;color:#e2e8f0;padding:30px;min-height:100vh;}
+h1{text-align:center;font-size:24px;margin-bottom:8px;color:#f1f5f9;}
+.subtitle{text-align:center;color:#94a3b8;margin-bottom:30px;font-size:13px;}
+
+.flow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:40px;}
+
+.node{background:#1e293b;border-radius:12px;padding:16px 14px;width:200px;border-left:4px solid #3b82f6;transition:transform 0.2s;}
+.node:hover{transform:translateY(-3px);}
+.node.purple{border-left-color:#a855f7;}
+.node.red{border-left-color:#ef4444;}
+.node.orange{border-left-color:#f97316;}
+.node.green{border-left-color:#22c55e;}
+.node.darkred{border-left-color:#dc2626;}
+.node.teal{border-left-color:#14b8a6;}
+.node.blue{border-left-color:#3b82f6;}
+
+.node-label{font-weight:700;font-size:14px;line-height:1.5;margin-bottom:8px;white-space:pre-line;}
+.node-detail{font-size:12px;color:#94a3b8;line-height:1.6;}
+
+.arrow-row{display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0;flex-wrap:wrap;}
+.arrow{color:#64748b;font-size:18px;}
+.arrow-label{font-size:11px;color:#64748b;background:#1e293b;padding:2px 8px;border-radius:10px;}
+.arrow-label.dashed{border:1px dashed #475569;}
+
+.section-title{font-size:16px;font-weight:700;color:#f1f5f9;margin:30px 0 16px;border-bottom:1px solid #334155;padding-bottom:6px;}
+
+.findings{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;margin-bottom:30px;}
+.finding{background:#1e293b;border-radius:10px;padding:14px 16px;border-left:3px solid #f59e0b;}
+.finding .num{color:#f59e0b;font-weight:700;font-size:13px;}
+.finding .text{font-size:13px;color:#cbd5e1;margin-top:4px;line-height:1.5;}
+
+.code-block{background:#0f1729;border-radius:10px;padding:16px;margin:10px 0;overflow-x:auto;}
+.code-block pre{font-family:'Cascadia Code','Consolas',monospace;font-size:12px;color:#a5b4fc;line-height:1.5;}
+.code-block .kw{color:#f59e0b;}
+.code-block .st{color:#22c55e;}
+.code-block .cm{color:#64748b;}
+
+.path-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px;}
+.path-table th{background:#1e293b;color:#94a3b8;text-align:left;padding:10px 14px;font-weight:600;}
+.path-table td{padding:10px 14px;border-bottom:1px solid #1e293b;color:#cbd5e1;line-height:1.5;}
+.path-table tr:hover td{background:#1e293b40;}
+.path-table .code{font-family:monospace;font-size:12px;color:#a5b4fc;}
+.path-table .impact{font-weight:700;}
+.path-table .impact.high{color:#ef4444;}
+.path-table .impact.mid{color:#f59e0b;}
+.path-table .impact.low{color:#22c55e;}
+
+.strategy-box{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:10px 0;}
+.strategy{background:#1e293b;border-radius:10px;padding:14px;}
+.strategy .st-name{font-weight:700;font-size:14px;margin-bottom:6px;}
+.strategy .st-name.s1{color:#ef4444;}
+.strategy .st-name.s2{color:#f59e0b;}
+.strategy .st-name.s3{color:#22c55e;}
+.strategy .gate{font-size:12px;color:#94a3b8;line-height:1.5;}
+.strategy .sc{font-family:monospace;font-size:11px;color:#a5b4fc;background:#0f1729;padding:2px 6px;border-radius:4px;}
+
+.dragon-path{position:relative;margin:20px 0;padding:20px;background:linear-gradient(135deg,#1a1a2e20,#16213e20);border:1px solid #334155;border-radius:12px;}
+.dragon-path .step{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;}
+.dragon-path .step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.dragon-path .step-num.dragon{background:#ef444420;color:#ef4444;border:2px solid #ef4444;}
+.dragon-path .step-num.stage{background:#f9731620;color:#f97316;border:2px solid #f97316;}
+.dragon-path .step-num.mainline{background:#a855f720;color:#a855f7;border:2px solid #a855f7;}
+.dragon-path .step-num.action{background:#22c55e20;color:#22c55e;border:2px solid #22c55e;}
+.dragon-path .step-body{flex:1;font-size:13px;line-height:1.6;}
+.dragon-path .arrow-down{text-align:center;color:#475569;margin:2px 0 2px 14px;}
+</style>
+</head>
+<body>
+
+<h1>龙头在项目决策中的参与链路</h1>
+<p class="subtitle">从 TDX 快照 -> 龙头识别 -> 共识阶段 -> 主线分类 -> 策略门控 -> Dashboard 展示</p>
+
+<div class="flow">
+  <div class="node blue">
+    <div class="node-label">1 数据采集<br>(TDX快照)</div>
+    <div class="node-detail">每3秒轮询<br>转债涨跌/正股涨跌<br>溢价率/成交额</div>
+  </div>
+  <div class="node purple">
+    <div class="node-label">2 共识追踪器<br>(ConsensusTracker)</div>
+    <div class="node-detail">逐概念聚合池内债<br>计算阶段 0-7<br>识别龙一/龙二/龙三</div>
+  </div>
+  <div class="node red">
+    <div class="node-label">3 龙头判定<br>(_compute_stage)</div>
+    <div class="node-detail">龙一 = 池内涨幅最高<br>涨停计数<br>跟班计数<br>龙一涨幅</div>
+  </div>
+  <div class="node orange">
+    <div class="node-label">4 主线分类<br>(set_mainlines)</div>
+    <div class="node-detail">stage>=3 -> 主线确认<br>stage>=2+heat>3 -> 确认<br>stage>=1 -> 观察<br>stage=0 -> 无主线</div>
+  </div>
+  <div class="node green">
+    <div class="node-label">5 信号增强<br>(SignalEngine)</div>
+    <div class="node-detail">主线内 B->A 升级<br>超跌修复升级<br>分数 x 1.2</div>
+  </div>
+  <div class="node darkred">
+    <div class="node-label">6 决策管道<br>(DecisionPipeline)</div>
+    <div class="node-detail">阶段1: 主线判定<br>阶段2: 正股判定<br>阶段3: 转债判定<br>阶段4: 风险判定</div>
+  </div>
+  <div class="node teal">
+    <div class="node-label">7 Dashboard<br>展示输出</div>
+    <div class="node-detail">龙头排行<br>主线主题<br>埋伏/卖出列表<br>概念传导链</div>
+  </div>
+</div>
+
+<h2 class="section-title">核心结论 -- 龙头的间接门控角色</h2>
+
+<div class="findings">
+  <div class="finding">
+    <div class="num">发现 1</div>
+    <div class="text"><strong>龙头不直接参与评分</strong> -- 没有"龙头加分"的线性权重系数。龙头的角色是<strong>通过共识阶段间接影响</strong>，而非作为独立维度加/减分。</div>
+  </div>
+  <div class="finding">
+    <div class="num">发现 2</div>
+    <div class="text"><strong>阶段3(封板)是关键阈值</strong> -- 龙头涨停+有跟班 -> 阶段升至3以上 -> 主线确认 -> 策略1外溢策略打开。龙头涨停但无跟班(孤狼)只能到阶段2，<strong>无法触发最强策略</strong>。</div>
+  </div>
+  <div class="finding">
+    <div class="num">发现 3</div>
+    <div class="text"><strong>策略2(板块扩散)对主线要求宽松</strong> -- 阶段1(酝酿)的主线观察即可，但会被<strong>概念质量过滤</strong>(扩散<30%或RRG落后 -> 不追)。</div>
+  </div>
+  <div class="finding">
+    <div class="num">发现 4</div>
+    <div class="text"><strong>信号引擎升一级</strong> -- 主线内触发B级信号自动升A，分数x1.2。这是龙头影响力"下沉"到信号层的入口。</div>
+  </div>
+  <div class="finding">
+    <div class="num">发现 5</div>
+    <div class="text"><strong>Dashboard龙头排行是独立展示层</strong> -- /api/dragons 基于共识数据独立计算热度分，用于人工视觉确认，<strong>不参与自动化决策</strong>。</div>
+  </div>
+  <div class="finding">
+    <div class="num">发现 6</div>
+    <div class="text"><strong>策略3(错杀修复)完全不依赖龙头</strong> -- 退潮/冰点市场的超跌修复策略只关心转债跌幅和正股抗跌，不检查主线。</div>
+  </div>
+</div>
+
+<h2 class="section-title">完整决策链路 -- 以"龙头涨停"为例</h2>
+
+<div class="dragon-path">
+  <div class="step">
+    <div class="step-num dragon">龙</div>
+    <div class="step-body">
+      <strong>某概念龙一涨停 +10%，龙二 +3%，龙三 +1.5%</strong><br>
+      <span style="color:#94a3b8">-> limit_up_count=1, follower_count=2, dragon_sc_pct=10.0</span>
+    </div>
+  </div>
+  <div class="arrow-down">+</div>
+  <div class="step">
+    <div class="step-num stage">阶</div>
+    <div class="step-body">
+      <strong>共识阶段 = 4 (扩散)</strong><br>
+      <span style="color:#94a3b8">-> _compute_stage: limit_up_count=1 AND follower>=2 -> stage=4</span>
+    </div>
+  </div>
+  <div class="arrow-down">+</div>
+  <div class="step">
+    <div class="step-num mainline">主</div>
+    <div class="step-body">
+      <strong>主线确认 (MAINLINE_CONFIRMED)</strong><br>
+      <span style="color:#94a3b8">-> set_mainlines: stage>=3 -> _mainline_concepts.add(concept)</span>
+    </div>
+  </div>
+  <div class="arrow-down">+</div>
+  <div class="step">
+    <div class="step-num action">策</div>
+    <div class="step-body">
+      <strong>该概念下所有满足条件的转债 -> 触发"埋伏"信号</strong><br>
+      <span style="color:#94a3b8">-> 策略1(外溢): mainline=CONFIRMED + stock=UNBUYABLE + risk=OK -> 埋伏<br>
+      -> 策略2(扩散): mainline=CONFIRMED + stock>=STRONG + risk=OK -> 埋伏<br>
+      -> 信号引擎: B级信号自动升级为A级</span>
+    </div>
+  </div>
+</div>
+
+<h2 class="section-title">三大策略的门控条件对比</h2>
+
+<div class="strategy-box">
+  <div class="strategy">
+    <div class="st-name s1">策略1 -- 正股涨停外溢</div>
+    <div class="gate">
+      <strong>主线要求: 必须 主线确认/观察</strong><br><br>
+      正股: 涨停(>=9.5%)<br>
+      风险: 可做<br>
+      市场: 非冰点<br><br>
+      <span class="sc">mainline >= WATCH</span><br>
+      <span class="sc">stock = UNBUYABLE</span><br>
+      <span class="sc">risk = OK</span><br>
+      <span class="sc">market != freeze</span>
+    </div>
+  </div>
+  <div class="strategy">
+    <div class="st-name s2">策略2 -- 板块扩散</div>
+    <div class="gate">
+      <strong>主线要求: 主线观察即可</strong><br><br>
+      正股: 强势(>=3%)<br>
+      风险: 可做<br>
+      概念质量: 扩散>=30%<br><br>
+      <span class="sc">mainline >= WATCH</span><br>
+      <span class="sc">stock >= STRONG</span><br>
+      <span class="sc">risk = OK</span><br>
+      <span class="sc">diffusion >= 30%</span>
+    </div>
+  </div>
+  <div class="strategy">
+    <div class="st-name s3">策略3 -- 错杀修复</div>
+    <div class="gate">
+      <strong>主线要求: 不需要</strong><br><br>
+      转债: 跌>=2%<br>
+      正股: 抗跌(>-3%)<br>
+      成交额: >=0.2亿<br><br>
+      <span class="sc">cb_pct < -2%</span><br>
+      <span class="sc">stock_pct > -3%</span><br>
+      <span class="sc">amount > 0.2亿</span><br>
+      <span class="sc">无主线依赖</span>
+    </div>
+  </div>
+</div>
+
+<h2 class="section-title">代码层面的关键调用链</h2>
+
+<div class="code-block">
+<pre>
+<span class="cm"># scheduler.py _run_cycle() -- 每3秒</span>
+consensus_tracker.<span class="kw">update</span>(snapshots, stock_of)      <span class="cm"># -> 逐概念判定阶段+龙头</span>
+
+<span class="cm"># scheduler.py _run_decision_pipeline()</span>
+all_states = consensus_tracker.<span class="kw">get_all()</span>
+consensus_stages = {c: s.<span class="kw">get</span>(<span class="st">'stage'</span>, 0) for c, s in all_states.items()}
+pipeline.<span class="kw">set_mainlines</span>(consensus_stages, concept_heat)  <span class="cm"># -> 龙头->主线</span>
+
+<span class="cm"># decision_pipeline.py evaluate()</span>
+in_mainline = any(c in self._mainline_concepts     <span class="cm"># <-- 龙头的最终影响力</span>
+                  for c in concepts)
+if in_mainline:
+    decision.mainline = MAINLINE_CONFIRMED         <span class="cm"># -> 打开策略1/2门控</span>
+
+<span class="cm"># signal_engine.py _upgrade_confidence()</span>
+if signal.signal_type == <span class="st">'股价大涨转债滞涨'</span> and in_mainline:
+    signal.level = <span class="st">'A'</span>                          <span class="cm"># -> B->A升级</span>
+    signal.score = round(signal.score * 1.2, 1)
+</pre>
+</div>
+
+<h2 class="section-title">影响力强度总结</h2>
+
+<table class="path-table">
+  <thead>
+    <tr>
+      <th>决策环节</th>
+      <th>龙头参与方式</th>
+      <th>影响力</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="code">策略1(外溢) 门控</td>
+      <td>主线确认 = 必要条件</td>
+      <td class="impact high">决定性 - 能/否触发</td>
+      <td>没有主线确认 -> 策略1完全不触发</td>
+    </tr>
+    <tr>
+      <td class="code">策略2(扩散) 门控</td>
+      <td>主线观察 = 必要条件</td>
+      <td class="impact high">决定性 - 能/否触发</td>
+      <td>无主线观察 -> 策略2在启动市不可用</td>
+    </tr>
+    <tr>
+      <td class="code">概念质量过滤</td>
+      <td>扩散指标(跟班率) + RRG</td>
+      <td class="impact mid">附加门槛</td>
+      <td>扩散<30% 或 RRG落后 -> 过滤(不追)</td>
+    </tr>
+    <tr>
+      <td class="code">信号引擎升级</td>
+      <td>主线内 B->A</td>
+      <td class="impact mid">等级提升</td>
+      <td>主线内的滞涨信号优先级提升</td>
+    </tr>
+    <tr>
+      <td class="code">策略3(错杀) 判定</td>
+      <td>不参与</td>
+      <td class="impact low">无影响</td>
+      <td>错杀修复不检查主线</td>
+    </tr>
+    <tr>
+      <td class="code">Dashboard 排行</td>
+      <td>独立计算热度分</td>
+      <td class="impact low">仅展示</td>
+      <td>/api/dragons 用于人工确认</td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

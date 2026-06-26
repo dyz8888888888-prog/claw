@@ -1,0 +1,132 @@
+# 可转债作战台 — 自动刷新执行记录
+
+## 最近执行
+- **2026-06-27 01:33**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (25571 bytes)，ambush=0 sell=0, dragons=0, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-27 00:36**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (25571 bytes)，ambush=0 sell=0, dragons=0, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 23:39**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (37148 bytes)，ambush=0 sell=0, dragons=11, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-26 22:42**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (37148 bytes)，ambush=0 sell=0, dragons=11, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 21:45**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (37148 bytes)，ambush=0 sell=0, dragons=11, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 20:47**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (37148 bytes)，ambush=0 sell=0, dragons=11, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 19:50**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (37148 bytes)，ambush=0 sell=0, dragons=11, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 18:52**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (37148 bytes)，ambush=0 sell=0, dragons=11, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 17:55**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (37148 bytes)，ambush=0 sell=0, dragons=11, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 16:58**: 跳过。Flask API 不可达 — localhost:5000 有进程响应(根路径200)但 /api/battle /api/state 均返回404，非 cb_monitor 应用。未执行更新。
+- **2026-06-26 16:01**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (97838 bytes)，ambush=2 sell=0, dragons=15, sentiment_detail 超时(sentiment_src=?)，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 15:03**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (98715 bytes)，ambush=2 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 14:05**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (101793 bytes)，ambush=3 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 13:08**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (95090 bytes)，ambush=0 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 12:09**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (94677 bytes)，ambush=0 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 11:10**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (90384 bytes)，ambush=0 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 10:13**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (68123 bytes)，ambush=0 sell=0, dragons=2, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-26 09:20**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103795 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-26 08:28**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 07:36**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 06:39**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 05:42**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 04:45**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 03:48**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 02:51**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 01:54**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-26 00:57**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103905 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 23:59**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 23:02**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 22:05**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 21:08**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 20:11**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 19:14**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 18:16**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 17:19**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103929 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 16:21**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103052 bytes)，ambush=8 sell=0, dragons=15, sentiment_detail 超时，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 15:23**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (103939 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 14:26**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (107388 bytes)，ambush=8 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-25 13:28**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (91839 bytes)，ambush=1 sell=0, dragons=15, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 12:31**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (39072 bytes)，ambush=0 sell=0, dragons=8, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 11:54**: 成功。Flask API 可达(200)，MarketStateClassifier与SentimentEngine已合并(唯一源)。gen_live_html.py生成index.html (39072 bytes)，ambush=0 sell=0, dragons=8, sentiment_src=fuyao+kpl, market_state源=sentiment_engine，部署至CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)。
+- **2026-06-25 11:33**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (72432 bytes)，ambush=1 sell=0, dragons=9, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 10:55**: 手动修复龙头渲染Bug后重新部署。renderDragons() 从 KPL-only 改为兼容 Fuyao(board/seal_yi/label) + KPL(consecutive_days/fengdan_score) 双格式。89135 bytes。localtunnel 已重连。
+- **2026-06-25 10:35**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (88436 bytes)，ambush=2 sell=0, dragons=9, sentiment_src=fuyao+kpl，部署至 CloudStudio
+- **2026-06-25 10:22**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (76650 bytes, 53KB嵌入数据)，ambush=1 sell=0, dragons=6, sentiment=fuyao+kpl，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)。同时 localtunnel (dyz-cb-battle.loca.lt) 在线，实时4Tab AJAX轮询正常。
+- **2026-06-25 09:44**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (61998 bytes)，ambush=0 sell=0, dragons=0，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-25 09:23**: 成功。**重大升级**: gen_live_html.py 重写为完整4Tab页面 (战情/板块/情绪/复盘)，37,894 bytes，嵌入6个API全量数据。dragons=8, sentiment_src=fuyao+kpl, ambush=0 sell=0。部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-25 08:51**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10983 bytes, 2302 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-25 07:58**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 07:04**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 06:07**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 05:10**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (19680 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 04:13**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (19680 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 03:16**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 02:19**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 01:22**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-25 00:25**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 23:28**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 22:31**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 21:34**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 20:37**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 19:39**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-24 18:42**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 17:45**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 16:48**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes, 9587 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 15:50**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (18268 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 14:53**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (50979 bytes, 42298 bytes data)，ambush=3 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 13:56**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (38557 bytes, 29876 bytes data)，ambush=7 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 12:58**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10964 bytes, 2283 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 12:13**: 战情数据验证。ambush=0 sell=0 — 正确（午休11:30-13:00调度器暂停，state.snapshots为空）。13:00开盘自动恢复。server PID 38148 正常运行，scheduler 逻辑正确（15分钟休眠→13:00切3秒轮询）。
+- **2026-06-24 12:00**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10964 bytes, 2283 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 11:01**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (35606 bytes, 26925 bytes data)，ambush=3 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 10:02**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (43208 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 09:08**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10824 bytes, 2143 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 08:17**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10824 bytes, 2143 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 07:24**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10824 bytes, 2143 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 06:27**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10824 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 05:30**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10824 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-24 04:33**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10824 bytes, 2143 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 03:36**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10824 bytes, 2143 bytes data)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 02:39**: 成功。Flask API 可达(200, 2358 bytes)，gen_live_html.py 生成 index.html (10824 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-24 01:42**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10824 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-24 00:45**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10824 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 23:47**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10824 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-23 23:14**: 成功（重启+验证）。本轮为启动检测任务（非常规刷新）。Flask API 6端点全部 HTTP 200：/ → 28KB, /api/battle → 3KB (dragons=8 sectors=12), /api/concept_sectors → 61KB (388概念实时), /api/concept_stats → 174B (113↑/252↓)。修复3项问题：信号在子线程注册崩溃、python-dotenv未安装致Fuyao API全部失效、概念端点503→200。localtunnel dyz-cb-battle 被占用503，需重新绑定。详细产出见 output 正文。
+- **2026-06-23 22:50**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (12114 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 21:55**: 成功(手动重启)。Flask 硬重启加载昨日9项改进新代码，/api/signal_accuracy /api/dragons 均 200，localtunnel dyz-cb-battle.loca.lt 在线，HTML 快照 10773 bytes。盘后数据空正常。
+- **2026-06-23 21:53**: 跳过。Flask API (localhost:5000) 不可达 (Connection refused)，端口无进程监听，未执行更新。
+- **2026-06-23 08:44**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10773 bytes)，ambush=0 sell=0。CloudStudio 部署工具不可用，localtunnel (dyz-cb-battle.loca.lt) 在线。
+- **2026-06-23 20:56**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10773 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 20:00**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10773 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
+- **2026-06-23 19:02**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (10773 bytes)，ambush=0 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 18:05**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (38656 bytes)，ambush=4 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 17:07**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (38656 bytes)，ambush=4 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 16:10**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (38656 bytes)，ambush=4 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 15:33**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (38656 bytes)，ambush=4 sell=0，localtunnel 在线(dyz-cb-battle.loca.lt 200)
+- **2026-06-23 15:13**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (38656 bytes)，ambush=4 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 14:15**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (38040 bytes)，ambush=4 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 13:18**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (38736 bytes)，ambush=7 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 12:21**: 成功。Flask API 可达，gen_live_html.py 生成 index.html (38132 bytes)，ambush=6 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 11:24**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (38167 bytes)，ambush=7 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 10:27**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (30154 bytes)，ambush=1 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 10:15**: 修复手机端静态问题。根因: fetchBattle() 无条件使用嵌入数据并 return，3s定时器形同虚设。修改: 首次用嵌入数据秒出(`__embeddedUsed`标志)，后续轮询走 AJAX fetch('/api/battle')。需全杀Python进程后重启Flask使模板生效(Flask debug=False缓存)。localtunnel 需同步重启。
+- **2026-06-23 09:41**: 成功。Flask API 可达(200)，gen_live_html.py 执行成功，ambush=3 sell=0。CloudStudio deploy 工具当前不可用，继续使用 localtunnel 外链。
+- **2026-06-23 09:34**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (13561 bytes)，ambush=3 sell=0，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
+- **2026-06-23 09:12**: 固定外链方案。workbuddy_cloudstudio_deploy 工具不可用，改用 localtunnel + 固定子域名 dyz-cb-battle 暴露 Flask :5000。
+
+## 当前外链方案
+- Flask API: 运行中 (localhost:5000)
+- **固定外链**: https://dyz-cb-battle.loca.lt (localtunnel `--subdomain dyz-cb-battle`)
+- gen_live_html.py: 正常运行（生成静态快照到 outputs/deploy/）
+- CloudStudio deploy: 工具不可用，自动化部署暂停
+- 注意: 机器重启后需重新启动 localtunnel（`npx localtunnel --port 5000 --subdomain dyz-cb-battle`）
+- **标准化**: 2026-06-23 创建 `cb-tunnel` skill（`~/.workbuddy/skills/cb-tunnel/`），固化三步流程: 启动Flask → gen_live_html → localtunnel
+
+## 较早记录
+- **2026-06-22 21:04**: 跳过。Flask API (localhost:5000) 不可达 (HTTP 000, 连接被拒绝)，未执行更新。
+- **2026-06-22 20:05**: 跳过。Flask API (localhost:5000) 不可达 (HTTP 000, 连接被拒绝)，未执行更新。
+- **2026-06-22 19:05**: 跳过。Flask API (localhost:5000) 不可达 (HTTP 000, 连接被拒绝)，未执行更新。
+- **2026-06-22 18:07**: 跳过。Flask API (localhost:5000) 不可达 (HTTP 000, 连接被拒绝)，未执行更新。
+- **2026-06-22 17:06**: 跳过。Flask API (localhost:5000) 不可达 (HTTP 000, 连接超时)，未执行更新。
+- **2026-06-22 15:48**: 成功（需恢复服务）。Flask API 端口被 node.exe(TechLux) 占用，先 kill 后重启 cb_monitor main.py，Flask API 恢复。gen_live_html.py 生成 index.html (8893 bytes)，部署至 CloudStudio。
+  - 数据: ambush=0, sell=0（盘后重启，调度器尚未获取实时快照）
+- **2026-06-22 14:44**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (16.5KB, 7820 bytes)，部署至 CloudStudio。
+  - 数据: ambush=9, sell=21
+- **2026-06-22 13:40**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (15KB, 6703 bytes)，部署至 CloudStudio。
+  - 数据: ambush=2, sell=17
+- **2026-06-22 12:37**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (15KB)，部署至 CloudStudio。
+  - 数据: 6713 bytes, ambush=2, sell=17

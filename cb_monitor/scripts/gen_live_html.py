@@ -1,0 +1,487 @@
+#!/usr/bin/env python3
+"""Generate full 4-tab self-contained HTML snapshot from Flask APIs, save to deploy dir"""
+import json, os, urllib.request, sys
+
+BASE = "http://localhost:5000"
+APIS = {
+    "battle": f"{BASE}/api/battle",
+    "state": f"{BASE}/api/state",
+    "dragons": f"{BASE}/api/dragons",
+    "sector_flow": f"{BASE}/api/sector_flow",
+    "sentiment_detail": f"{BASE}/api/sentiment_detail",
+    "backtest": f"{BASE}/api/backtest",
+}
+OUTPUT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'outputs', 'deploy', 'index.html')
+
+# Fetch all APIs
+data = {}
+for key, url in APIS.items():
+    try:
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            data[key] = json.loads(resp.read().decode('utf-8'))
+    except Exception as e:
+        print(f"  WARN: {key} fetch failed: {e}")
+        data[key] = {}
+
+b = data["battle"]
+print(f"Data: battle={len(json.dumps(b,ensure_ascii=False))}b, ambush={b.get('ambush_count',0)} sell={b.get('sell_count',0)}, dragons={len(data['dragons'].get('dragons',[]))}, sentiment_src={data['sentiment_detail'].get('source','?')}")
+
+# Embed all data as JSON
+embeds = {k: json.dumps(v, ensure_ascii=False) for k, v in data.items()}
+
+html = r'''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta http-equiv="refresh" content="15">
+<title>可转债作战台</title>
+<style>
+:root{--bg:#0a0e17;--card:#111827;--border:#1e293b;--text:#e2e8f0;--dim:#64748b;--green:#22c55e;--red:#ef4444;--orange:#f59e0b;--blue:#3b82f6;--purple:#a855f7;--amber:#fbbf24}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);padding:10px 10px 80px;max-width:480px;margin:0 auto;-webkit-tap-highlight-color:transparent}
+.bar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);margin-bottom:8px;font-size:12px}
+.bar .time{font-weight:700;color:#fff;font-size:14px}
+.sentiment{padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.sentiment.\8fdb\653b{background:rgba(239,68,68,0.2);color:var(--red)}
+.sentiment.\9707\8361{background:rgba(245,158,11,0.2);color:var(--orange)}
+.sentiment.\9707\8361\u504f\u5f3a{background:rgba(251,191,36,0.2);color:var(--amber)}
+.sentiment.\4fee\590d{background:rgba(59,130,246,0.2);color:var(--blue)}
+.sentiment.\9000\6f6e{background:rgba(100,116,139,0.3);color:var(--dim)}
+.sentiment.\8fc7\70ed{background:rgba(239,68,68,0.2);color:var(--red)}
+.sentiment.\6d3b\8dc3{background:rgba(34,197,94,0.2);color:var(--green)}
+.sentiment.\6e29\548c{background:rgba(245,158,11,0.2);color:var(--orange)}
+.sentiment.\51b0\70b9{background:rgba(100,116,139,0.3);color:var(--dim)}
+
+.stats-row{display:flex;gap:6px;margin-bottom:8px}
+.stat{flex:1;text-align:center;padding:8px 4px;background:var(--card);border-radius:8px;border:1px solid var(--border)}
+.stat .val{font-size:18px;font-weight:800}
+.stat .lbl{font-size:9px;color:var(--dim);margin-top:2px}
+.stat.ambush .val{color:var(--red)}
+.stat.sell .val{color:var(--orange)}
+.stat.forbid .val{color:var(--dim)}
+
+.themes{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.theme-tag{padding:3px 8px;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);border-radius:12px;font-size:10px;color:var(--blue)}
+
+.sec-title{font-size:12px;font-weight:700;color:var(--dim);margin:10px 0 6px;text-transform:uppercase;letter-spacing:.5px}
+
+.card{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:12px;margin-bottom:8px;position:relative}
+.card.ambush{border-left:3px solid var(--red)}
+.card.sell{border-left:3px solid var(--orange)}
+.card.forbid{border-left:3px solid var(--dim);opacity:.8}
+.card .head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.card .action-tag{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:800;color:#fff}
+.card.ambush .action-tag{background:var(--red)}
+.card.sell .action-tag{background:var(--orange)}
+.card.forbid .action-tag{background:var(--dim)}
+.card .name{font-size:15px;font-weight:700;color:#fff}
+.card .code{font-size:11px;color:var(--dim)}
+.card .concept{font-size:10px;padding:1px 6px;border-radius:4px;background:rgba(59,130,246,0.15);color:var(--blue);margin-left:4px}
+.card .reason{font-size:11px;color:var(--text);line-height:1.5;margin-bottom:6px;padding:6px 8px;background:rgba(255,255,255,0.03);border-radius:6px}
+.card .data-row{display:flex;gap:12px;font-size:11px;margin-bottom:4px;flex-wrap:wrap}
+.card .data-item{color:var(--dim)}
+.card .data-item span{color:#fff;font-weight:600}
+.card .data-item.up{color:var(--red)}
+.card .data-item.down{color:var(--green)}
+.card .footer{display:flex;gap:12px;font-size:9px;color:var(--dim);margin-top:6px;padding-top:6px;border-top:1px solid var(--border);flex-wrap:wrap}
+.card .footer .risk{color:var(--orange)}
+
+.chain{background:var(--card);border-radius:10px;border:1px solid var(--border);padding:10px 12px;margin-bottom:8px}
+.chain .line{font-size:11px;padding:3px 0;display:flex;align-items:center;gap:6px}
+.chain .line .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.chain .line .dot.s2{background:var(--red)}
+.chain .line .dot.s3{background:var(--orange)}
+.chain .line .dot.s4{background:var(--blue)}
+
+.forbid-list{font-size:10px;color:var(--dim)}
+.forbid-list .item{padding:4px 8px;margin-bottom:2px;background:rgba(239,68,68,0.05);border-radius:4px;border-left:2px solid var(--red)}
+
+.refresh-info{text-align:center;font-size:9px;color:var(--dim);margin-top:12px}
+.empty{text-align:center;padding:30px;color:var(--dim);font-size:13px}
+
+/* Tabs */
+.tabs{display:flex;margin-bottom:12px;background:var(--card);border-radius:10px;padding:3px}
+.tab{flex:1;text-align:center;padding:8px;font-size:12px;font-weight:600;color:var(--dim);border-radius:8px;cursor:pointer}
+.tab.active{background:rgba(59,130,246,0.2);color:var(--blue)}
+.page{display:none}
+.page.active{display:block}
+
+/* 龙头 */
+.dragon-row{display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:4px;background:rgba(255,255,255,0.02);border-radius:8px;font-size:11px}
+.dragon-row .rank{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.dragon-row .rank.r1{background:var(--red);color:#fff}
+.dragon-row .rank.r2{background:var(--orange);color:#fff}
+.dragon-row .rank.r3{background:var(--blue);color:#fff}
+.dragon-row .dn{font-weight:700;color:#fff}
+.dragon-row .ds{font-size:9px;color:var(--dim)}
+.dragon-row .dsg{font-size:9px;color:var(--green)}
+.dragon-row .dsr{font-size:9px;color:var(--red)}
+.dragon-row .reason{font-size:9px;color:var(--dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+
+/* 六维情绪 */
+.senti-cards{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px}
+.senti-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center}
+.senti-card .sv{font-size:20px;font-weight:800}
+.senti-card .sl{font-size:9px;color:var(--dim);margin-top:2px}
+.senti-phase{text-align:center;padding:12px;margin-bottom:8px;background:var(--card);border-radius:10px;border:1px solid var(--border)}
+.senti-phase .sp{font-size:24px;font-weight:800;margin-bottom:2px}
+.senti-phase .sa{font-size:11px;color:var(--dim)}
+.senti-phase .ss{font-size:10px;color:var(--orange);margin-top:4px}
+
+.senti-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:10px}
+.senti-bar-row .slbl{width:60px;color:var(--dim);text-align:right;flex-shrink:0}
+.senti-bar-row .sbar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.senti-bar-row .sfill{height:100%;border-radius:3px}
+
+/* 资金流 */
+.flow-row{display:flex;align-items:center;gap:6px;padding:6px 8px;margin-bottom:3px;background:rgba(255,255,255,0.02);border-radius:6px;font-size:10px}
+.flow-row .fn{font-weight:600;color:#fff;flex:1}
+.flow-row .fv{color:var(--red)}
+.flow-row .fd{color:var(--green)}
+
+/* 复盘 */
+.bk-table{width:100%;font-size:10px;border-collapse:collapse}
+.bk-table th{color:var(--dim);text-align:left;padding:4px 6px;border-bottom:1px solid var(--border);font-weight:600}
+.bk-table td{padding:5px 6px;border-bottom:1px solid rgba(255,255,255,.04)}
+.bk-table .pos{color:var(--red)}
+.bk-table .neg{color:var(--green)}
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchPage('battle')">战情</div>
+  <div class="tab" onclick="switchPage('dragons')">板块</div>
+  <div class="tab" onclick="switchPage('sentiment')">情绪</div>
+  <div class="tab" onclick="switchPage('review')">复盘</div>
+</div>
+
+<!-- 战情页 -->
+<div class="page active" id="battlePage">
+  <div class="bar" id="topBar">
+    <span class="time" id="timeDisplay">--:--:--</span>
+    <span class="sentiment" id="marketState">--</span>
+    <span style="font-size:10px;color:var(--dim);margin-left:auto" id="stateDetail"></span>
+  </div>
+  <div class="stats-row">
+    <div class="stat ambush"><div class="val" id="ambushCount">0</div><div class="lbl">埋伏</div></div>
+    <div class="stat sell"><div class="val" id="sellCount">0</div><div class="lbl">卖出</div></div>
+    <div class="stat forbid"><div class="val" id="forbidCount">0</div><div class="lbl">禁入</div></div>
+  </div>
+  <div class="themes" id="themesRow"></div>
+  <div class="sec-title">埋伏</div>
+  <div id="ambushCards"><div class="empty">暂无机会</div></div>
+  <div class="sec-title">卖出提醒</div>
+  <div id="sellCards"><div class="empty">暂无</div></div>
+  <div class="sec-title">禁入</div>
+  <div id="forbiddenList"><div class="empty">暂无</div></div>
+</div>
+
+<!-- 板块页 -->
+<div class="page" id="dragonsPage">
+  <div class="sec-title">板块龙头 · 龙一~龙三</div>
+  <div id="dragonList"><div class="empty">暂无数据</div></div>
+  <div class="sec-title">板块资金流向</div>
+  <div id="sectorFlow"><div class="empty">暂无</div></div>
+</div>
+
+<!-- 情绪页 -->
+<div class="page" id="sentimentPage">
+  <div class="senti-phase" id="sentPhase">
+    <div class="sp" id="sentPhaseLabel">--</div>
+    <div class="sa" id="sentAdvice"></div>
+    <div class="ss" id="sentSignals"></div>
+  </div>
+  <div class="senti-cards" id="sentiCards"></div>
+  <div class="sec-title">六维明细</div>
+  <div id="sentiBars"></div>
+</div>
+
+<!-- 复盘页 -->
+<div class="page" id="reviewPage">
+  <div class="sec-title">后验统计</div>
+  <div id="reviewStats"><div class="empty">暂无数据</div></div>
+  <div class="sec-title">已完成信号 (最近20条)</div>
+  <div id="reviewTable"><div class="empty">暂无</div></div>
+</div>
+
+<div class="refresh-info">15秒快照 · 作战台静态版</div>
+
+<script>
+// Embedded data from all APIs
+var EMBED = {
+  battle: ''' + embeds["battle"] + r''',
+  state: ''' + embeds["state"] + r''',
+  dragons: ''' + embeds["dragons"] + r''',
+  sector_flow: ''' + embeds["sector_flow"] + r''',
+  sentiment: ''' + embeds["sentiment_detail"] + r''',
+  backtest: ''' + embeds["backtest"] + r'''
+};
+var LV = {S:'#ef4444',A:'#f59e0b',B:'#3b82f6',C:'#a855f7',D:'#6b7280'};
+
+function esc(s){return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function switchPage(p){
+  document.querySelectorAll('.tab').forEach(function(t){
+    var m={battle:'战情',dragons:'板块',sentiment:'情绪',review:'复盘'};
+    t.classList.toggle('active',t.textContent===m[p]);
+  });
+  document.getElementById('battlePage').classList.toggle('active',p==='battle');
+  document.getElementById('dragonsPage').classList.toggle('active',p==='dragons');
+  document.getElementById('sentimentPage').classList.toggle('active',p==='sentiment');
+  document.getElementById('reviewPage').classList.toggle('active',p==='review');
+  if(p==='battle') renderBattle();
+  if(p==='dragons') renderDragons();
+  if(p==='sentiment') renderSentiment();
+  if(p==='review') renderReview();
+}
+
+// ==================== 战情 Tab ====================
+function renderBattle(){
+  var d = EMBED.battle;
+  var s = EMBED.state;
+  document.getElementById('timeDisplay').textContent=new Date().toLocaleTimeString('zh-CN',{hour12:false});
+  var ms=document.getElementById('marketState');
+  var status=d.sentiment&&d.sentiment.status ? d.sentiment.status : ((s.market_state||{}).state_cn||'--');
+  ms.textContent=status;
+  ms.className='sentiment '+status;
+
+  document.getElementById('ambushCount').textContent=d.ambush_count||0;
+  document.getElementById('sellCount').textContent=d.sell_count||0;
+  document.getElementById('forbidCount').textContent=d.forbidden_count||0;
+
+  // 主线标签
+  var th=document.getElementById('themesRow');
+  var diff=d.diffusion||{};
+  var rrgData=d.rrg||{};
+  th.innerHTML=(d.main_themes||[]).map(function(t){
+    var dif=diff[t.name]||0;
+    var rrg=rrgData[t.name]||{};
+    var q=rrg.quadrant||'';
+    var qColor={'领先':'#ef4444','改善':'#f59e0b','转弱':'#3b82f6','落后':'#64748b'}[q]||'#64748b';
+    return '<span class="theme-tag">'+esc(t.name)+' '+esc(t.stage_name||'')+'</span>'+
+      '<span style="font-size:9px;color:var(--dim);margin:0 2px">扩散'+dif.toFixed(0)+'%</span>'+
+      (q?'<span style="font-size:9px;color:'+qColor+'">'+q+'</span>':'');
+  }).join('')||'<span style="font-size:10px;color:var(--dim)">暂无主线</span>';
+
+  renderCards('ambushCards',d.ambush||[]);
+  renderCards('sellCards',d.sell||[]);
+
+  // 禁入
+  var fb=document.getElementById('forbiddenList');
+  fb.innerHTML=(d.forbidden||[]).map(function(f){
+    return '<div class="forbid-list"><div class="item">'+esc(f.name)+'('+f.code+') - '+esc(f.reason)+' '+(f.risks||[]).map(function(r){return esc(r)}).join(' ')+'</div></div>';
+  }).join('')||'<div class="empty">暂无</div>';
+}
+
+function renderCards(id,cards){
+  var el=document.getElementById(id);
+  if(!cards.length){el.innerHTML='<div class="empty">暂无</div>';return}
+  el.innerHTML=cards.map(function(c){
+    var cls=c.action==='埋伏'?'ambush':c.action==='卖出'?'sell':'forbid';
+    var cbCls=c.cb_pct>=0?'up':'down';
+    var scCls=c.stock_pct>=0?'up':'down';
+    return '<div class="card '+cls+'"><div class="head"><span class="action-tag">'+c.action+'</span><span class="name">'+esc(c.name)+'</span><span class="code">'+c.code+'</span>'+
+      (c.concept?'<span class="concept">'+esc(c.concept)+'</span>':'')+'</div><div class="reason">'+esc(c.reason||'')+'</div>'+
+      '<div class="data-row"><span class="data-item '+cbCls+'">转债 <span>'+(c.cb_pct>0?'+':'')+c.cb_pct.toFixed(2)+'%</span></span>'+
+      '<span class="data-item '+scCls+'">正股 <span>'+(c.stock_pct>0?'+':'')+c.stock_pct.toFixed(2)+'%</span></span>'+
+      '<span class="data-item">溢价 <span>'+c.premium.toFixed(1)+'%</span></span>'+
+      '<span class="data-item">成交 <span>'+c.amount.toFixed(2)+'亿</span></span></div>'+
+      '<div class="footer"><span>接盘:'+esc(c.buyer||'')+'</span><span>'+esc(c.hold_time||'')+'</span>'+
+      '<span>止损 '+(c.stop_loss_pct||0)+'%</span><span>止盈 +'+(c.take_profit_pct||0)+'%</span>'+
+      (c.invalid_if?'<span class="risk">'+esc(c.invalid_if)+'</span>':'')+
+      ((c.risk_tags||[]).map(function(r){return '<span class="risk">'+esc(r)+'</span>'}).join(''))+'</div></div>';
+  }).join('');
+}
+
+// ==================== 板块 Tab ====================
+function renderDragons(){
+  var d = EMBED.dragons;
+  var el = document.getElementById('dragonList');
+  var dragons = d.dragons || [];
+  var sectors = d.sectors || [];
+
+  if(!dragons.length && !sectors.length){
+    el.innerHTML='<div class="empty">暂无数据 (收盘后刷新)</div>';
+    renderSectorFlow();
+    return;
+  }
+
+  var html='';
+  sectors.forEach(function(sec){
+    var ds = sec.dragons || [];
+    html+='<div class="chain" style="margin-bottom:6px"><div class="line"><b style="color:#fff;font-size:12px">'+esc(sec.name)+'</b> <span style="color:var(--dim);font-size:10px">'+sec.zt_count+'涨停</span></div>';
+    ds.forEach(function(dr,i){
+      var rc=i===0?'r1':i===1?'r2':i===2?'r3':'';
+      // 兼容 Fuyao(board) 和 KPL(consecutive_days) 两种数据格式
+      var boardDays = dr.board || dr.consecutive_days || 0;
+      var sealInfo = dr.seal_time ? ' '+dr.seal_time+'封' : '';
+      if(dr.seal_yi) sealInfo += ' '+(dr.seal_yi||0).toFixed(0)+'亿';
+      else if(dr.fengdan_score != null) sealInfo += ' '+(dr.fengdan_score||0).toFixed(0)+'分';
+      // 转债行情
+      var cbInfo = '';
+      if(dr.label && dr.label !== '无行情'){
+        var cbCls = dr.cb_pct >= 0 ? 'dsr' : 'dsg';
+        cbInfo = '<span class="'+cbCls+'">'+(dr.cb_pct>0?'+':'')+(dr.cb_pct||0).toFixed(2)+'%</span>';
+        if(dr.premium != null && dr.premium !== 0) cbInfo += ' <span style="color:var(--dim);font-size:9px">溢'+(dr.premium||0).toFixed(1)+'%</span>';
+        cbInfo += ' <span style="font-size:9px;color:'+(dr.label==='同步'?'var(--red)':'var(--orange)')+'">'+esc(dr.label)+'</span>';
+      } else if(dr.stock_name && dr.stock_name !== dr.name){
+        cbInfo = '<span style="color:var(--dim);font-size:9px">'+esc(dr.stock_name)+'</span>';
+      }
+      var extra = boardDays ? '<span class="ds">'+boardDays+'连板</span>' : '';
+      html+='<div class="dragon-row"><span class="rank '+rc+'">L'+(i+1)+'</span>'+
+        '<span class="dn">'+esc(dr.name)+'</span><span class="ds">'+dr.code+'</span>'+
+        extra + cbInfo + '<span class="ds" style="font-size:9px;color:var(--dim)">'+sealInfo+'</span></div>';
+      // 涨停原因 (Fuyao: link_type, KPL: reason)
+      if((dr.reason||dr.link_type) && i===0){
+        html+='<div class="dragon-row" style="padding-top:0"><span class="rank" style="visibility:hidden"></span><span class="reason">'+esc(dr.reason||dr.link_type||'')+'</span></div>';
+      }
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html||'<div class="empty">暂无数据</div>';
+  renderSectorFlow();
+}
+
+function renderSectorFlow(){
+  var d = EMBED.sector_flow;
+  var fl = document.getElementById('sectorFlow');
+  var flows = d.flows || [];
+  if(!flows.length){fl.innerHTML='<div class="empty">暂无</div>';return;}
+  fl.innerHTML=flows.map(function(f){
+    var cl=f.main_capital>=0?'fv':'fd';
+    return '<div class="flow-row"><span class="fn">'+esc(f.name)+'</span>'+
+      '<span style="color:var(--dim);font-size:9px">'+f.zt_count+'涨停</span>'+
+      '<span class="'+cl+'">'+(f.main_capital>0?'+':'')+f.main_capital.toFixed(0)+'万</span>'+
+      '<span style="color:var(--dim);font-size:9px">'+esc(f.top_stock||'')+'</span></div>';
+  }).join('')+'<div style="font-size:9px;color:var(--dim);text-align:center;margin-top:4px">更新 '+esc(d.updated||'--')+'</div>';
+}
+
+// ==================== 情绪 Tab ====================
+function renderSentiment(){
+  var d = EMBED.sentiment;
+  if(!d||!d.indicators){
+    document.getElementById('sentPhaseLabel').textContent='--';
+    return;
+  }
+  var ind = d.indicators;
+  var phase = d.phase_cn||'--';
+  var advice = d.advice||'';
+  var signals = (d.signals||[]).join(' · ');
+  var source = d.source==='snapshot'?' (盘中估算)':d.cached_date?' ('+d.cached_date+'收盘)':'';
+  var color = d.phase==='overheat'?'#ef4444':d.phase==='active'?'#22c55e':
+              d.phase==='mild'?'#f59e0b':d.phase==='ebb'?'#3b82f6':'#64748b';
+
+  document.getElementById('sentPhaseLabel').textContent=phase+source;
+  document.getElementById('sentPhaseLabel').style.color=color;
+  document.getElementById('sentAdvice').textContent=advice;
+  document.getElementById('sentSignals').textContent=signals;
+
+  var cardsEl=document.getElementById('sentiCards');
+  if(ind.limit_up!==undefined){
+    var items=[
+      {v:ind.limit_up,l:'涨停家数',c:ind.limit_up>=100?'#ef4444':ind.limit_up>=50?'#22c55e':ind.limit_up>=20?'#f59e0b':'#64748b'},
+      {v:ind.blast_ratio+'%',l:'炸板率',c:ind.blast_ratio<=20?'#22c55e':ind.blast_ratio<=35?'#f59e0b':'#ef4444'},
+      {v:ind.promotion_rate+'%',l:'晋级率',c:ind.promotion_rate>=50?'#ef4444':ind.promotion_rate>=30?'#22c55e':'#64748b'},
+      {v:ind.up_down_ratio,l:'涨跌比',c:ind.up_down_ratio>=2?'#ef4444':ind.up_down_ratio>=1?'#22c55e':'#64748b'},
+      {v:ind.new_high,l:'百日新高',c:'#f59e0b'},
+      {v:ind.sharp_withdrawal,l:'大幅回撤',c:ind.sharp_withdrawal>10?'#ef4444':'#64748b'},
+    ];
+    cardsEl.innerHTML=items.map(function(i){
+      return '<div class="senti-card"><div class="sv" style="color:'+i.c+'">'+i.v+'</div><div class="sl">'+i.l+'</div></div>';
+    }).join('');
+
+    var barsEl=document.getElementById('sentiBars');
+    var bars=[
+      {l:'涨停强度',v:Math.min(ind.limit_up/120*100,100),c:'#ef4444'},
+      {l:'封板质量',v:ind.seal_success_rate||0,c:'#22c55e'},
+      {l:'接力情绪',v:ind.promotion_rate||0,c:'#f59e0b'},
+      {l:'赚钱效应(昨)',v:Math.max(0,(ind.yesterday_zt_perf||0)*5+50),c:'#22c55e'},
+      {l:'亏钱效应',v:Math.min(ind.sharp_withdrawal*5||0,100),c:'#64748b'},
+      {l:'市场广度',v:Math.min(ind.up_down_ratio*30,100),c:'#3b82f6'},
+    ];
+    barsEl.innerHTML=bars.map(function(b){
+      return '<div class="senti-bar-row"><span class="slbl">'+b.l+'</span><div class="sbar"><div class="sfill" style="width:'+b.v+'%;background:'+b.c+'"></div></div><span style="font-size:9px;color:var(--dim)">'+b.v.toFixed(0)+'</span></div>';
+    }).join('');
+  }else if(ind.pool_up!==undefined){
+    cardsEl.innerHTML=
+      '<div class="senti-card"><div class="sv" style="color:#ef4444">'+ind.pool_up+'</div><div class="sl">转债池涨</div></div>'+
+      '<div class="senti-card"><div class="sv" style="color:#22c55e">'+ind.pool_down+'</div><div class="sl">转债池跌</div></div>'+
+      '<div class="senti-card"><div class="sv" style="color:#f59e0b">'+ind.pool_ratio+'</div><div class="sl">涨跌比</div></div>'+
+      '<div class="senti-card"><div class="sv" style="color:#3b82f6">'+(ind.pool_limit_up||0)+'</div><div class="sl">正股涨停(约)</div></div>';
+    document.getElementById('sentiBars').innerHTML='<div class="empty" style="padding:20px;font-size:10px">盘后15:30后可查看完整六维数据</div>';
+  }else{
+    cardsEl.innerHTML='<div class="empty">等待数据...</div>';
+    document.getElementById('sentiBars').innerHTML='';
+  }
+}
+
+// ==================== 复盘 Tab ====================
+function renderReview(){
+  var d = EMBED.backtest;
+  var stats = d.stats||{};
+  var total = stats.total||0;
+  var wr = stats.win_rate||0;
+  var avg = stats.avg_pnl||0;
+  var el = document.getElementById('reviewStats');
+  var active = d.active||[];
+  var activeCnt = active.length;
+
+  if(!total && !activeCnt){el.innerHTML='<div class="empty">暂无信号追踪</div>';document.getElementById('reviewTable').innerHTML='';return;}
+
+  var html='';
+  if(total){
+    html+='<div class="stats-row"><div class="stat"><div class="val">'+total+'</div><div class="lbl">已完成</div></div>'+
+      '<div class="stat"><div class="val" style="color:'+(wr>=50?'var(--red)':'var(--green)')+'">'+wr+'%</div><div class="lbl">胜率</div></div>'+
+      '<div class="stat"><div class="val" style="color:'+(avg>=0?'var(--red)':'var(--green)')+'">'+(avg>0?'+':'')+avg+'%</div><div class="lbl">均收益</div></div></div>';
+
+    var byStrat=stats.by_strategy||{};
+    for(var k in byStrat){
+      if(!byStrat.hasOwnProperty(k))continue;
+      var v=byStrat[k];
+      html+='<div style="font-size:10px;color:var(--dim);margin-top:6px">'+(k==='chase'?'追涨型':'回落型')+': '+v.total+'条 | 胜率'+v.win_rate+'% | 均收益'+v.avg_pnl+'% | 最佳'+(v.best?'+'+v.best.current_pnl+'%':'--')+' | 最差'+(v.worst?''+v.worst.current_pnl+'%':'--')+'</div>';
+    }
+
+    var byCp=stats.by_checkpoint||{};
+    if(Object.keys(byCp).length){
+      html+='<table class="bk-table" style="margin-top:8px"><tr><th>时间窗</th><th>样本</th><th>均收益</th><th>胜率</th><th>最佳</th><th>最差</th></tr>';
+      for(var cp in byCp){
+        if(!byCp.hasOwnProperty(cp))continue;
+        var cv=byCp[cp];
+        html+='<tr><td>'+cp+'s</td><td>'+cv.count+'</td><td class="'+(cv.avg_pnl>=0?'pos':'neg')+'">'+(cv.avg_pnl>0?'+':'')+cv.avg_pnl+'%</td><td>'+cv.win_rate+'%</td><td class="pos">+'+cv.best+'%</td><td class="neg">'+cv.worst+'%</td></tr>';
+      }
+      html+='</table>';
+    }
+  }
+  if(activeCnt && !total){
+    html+='<div style="font-size:11px;color:var(--dim);padding:4px 0">'+activeCnt+' 条信号追踪中 (300s后计入统计)</div>';
+  }
+  el.innerHTML=html||'<div class="empty">暂无信号追踪</div>';
+
+  var tb=document.getElementById('reviewTable');
+  tb.innerHTML=activeCnt?active.slice(0,30).map(function(a){
+    var pnlCls=a.current_pnl>=0?'pos':'neg';
+    return '<div style="font-size:10px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.03)">'+
+      '<span style="color:var(--dim)">'+esc(a.trigger_time)+'</span> '+
+      '<span style="color:'+(LV[a.level]||'#6b7280')+';font-weight:700">['+(a.level||'?')+']</span> '+
+      esc(a.name)+'('+a.code+') '+
+      '<span style="color:var(--dim)">'+esc(a.type||'')+'</span> '+
+      '<span class="'+pnlCls+'" style="font-weight:600">'+(a.current_pnl>0?'+':'')+a.current_pnl+'%</span> '+
+      '<span style="color:var(--dim);font-size:9px">触'+a.trigger_price+'峰'+a.peak_price+'</span></div>';
+  }).join(''):(total?'<div class="empty">无活跃追踪</div>':'<div class="empty">暂无</div>');
+}
+
+// Init: render current tab
+renderBattle();
+setInterval(function(){document.getElementById('timeDisplay').textContent=new Date().toLocaleTimeString('zh-CN',{hour12:false})},1000);
+</script>
+</body>
+</html>'''
+
+os.makedirs(os.path.dirname(OUTPUT), exist_ok=True)
+with open(OUTPUT, 'w', encoding='utf-8') as f:
+    f.write(html)
+print(f"Generated: {OUTPUT} ({len(html)} bytes) ready for deploy")
