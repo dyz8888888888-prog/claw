@@ -3,7 +3,7 @@
 
 每轮主循环从旧 shared_state 读取快照，
 转换为新 MarketSnapshot，经过新管道:
-  context → strategies → selector → risk → state_machine
+  context → strategies → selector → risk → state_machine → ledger (候选记录)
 结果写回 shared_state.sidecar_state，供仪表盘对比。
 """
 
@@ -13,14 +13,14 @@ import logging
 import time
 from typing import Any
 
-# 新模块导入
-from domain.enums import Regime, TradeMode, MachineState
+# 新模块导入 (默认从 cb_monitor/ 目录运行)
+from domain.enums import Regime, TradeMode, MachineState, RiskCheck
 from domain.models import MarketSnapshot, MarketContext, TradeIntent, CandidateRecord
 from context.market_regime import MarketRegimeClassifier, RegimeInput
 from context.strategy_router import StrategyRouter
 from strategies.volume_follow import VolumeFollowStrategy
 from engine.selector import Selector
-from engine.risk_engine import RiskEngine
+from engine.risk_engine import RiskEngine, RiskResult
 from engine.state_machine import TradingStateMachine
 
 logger = logging.getLogger(__name__)
@@ -180,14 +180,16 @@ class SidecarRunner:
 
             result["intents"] = len(all_intents)
 
-            # 4. Selector 排序
+            # 4. Selector 排序 + 风控 + 状态机
+            risk_allows = True  # 默认值
+            top_risk_result: RiskResult | None = None
             if all_intents:
                 recs = self._selector.rank(all_intents, new_snaps, self._ctx)
                 result["candidates"] = len(recs)
 
-                # 取 top1 试过风控
+                # 风控检查 top 候选
                 top = all_intents[0]
-                risk_result = self._risk_engine.check_new_trade(
+                top_risk_result = self._risk_engine.check_new_trade(
                     top, self._ctx,
                     account_ctx={
                         "daily_pnl_pct": 0.0, "consecutive_losses": 0,
@@ -196,19 +198,38 @@ class SidecarRunner:
                     },
                     positions=[],
                 )
-                result["risk_top1"] = risk_result.status.value
+                risk_allows = top_risk_result.status == RiskCheck.ALLOW
+                result["risk_top1"] = top_risk_result.status.value
+                result["risk_reason"] = "|".join(top_risk_result.reason_codes) if top_risk_result.reason_codes else ""
                 result["top_candidate"] = {
                     "code": top.cb_code, "score": top.score,
                     "reason": top.reason_text,
                 }
 
-            # 5. 更新状态机
+                # ── 写入候选记录到 TradeLedger ──
+                try:
+                    from ledger.trade_log import TradeLedger
+                    ledger = TradeLedger("data/trade_ledger.db")
+                    for r in recs:
+                        r.market_regime = self._ctx.regime.value
+                        r.trade_mode = self._ctx.trade_mode.value
+                        # 标记风控被拦的候选
+                        if top_risk_result and r.cb_code == top.cb_code:
+                            r.selected = risk_allows
+                            if not risk_allows:
+                                r.rejected_by = top_risk_result.reason_codes
+                    ledger.log_candidates(recs)
+                    ledger.close()
+                except Exception as e:
+                    logger.warning(f"侧车记账失败: {e}")
+
+            # 5. 更新状态机 (使用真实风控结果)
             has_candidates = len(all_intents) > 0
             self._state_machine.transition(
                 now_ts, self._ctx,
                 has_candidates=has_candidates,
                 has_open_positions=False,
-                risk_allows_new_trade=True,
+                risk_allows_new_trade=risk_allows,  # 真实风控结果
                 exit_required=False,
             )
             result["machine_state"] = self._state_machine.current.value
