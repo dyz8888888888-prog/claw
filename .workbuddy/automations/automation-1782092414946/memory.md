@@ -1,6 +1,17 @@
 # 可转债作战台 — 自动刷新执行记录
 
 ## 最近执行
+- **2026-06-27 22:02**: 跳过（非交易日）。Fuyao MCP 交易日历确认 2026-06-27（周六）不在交易日列表中，最后交易日 06-26（周五），下一交易日预计 06-29（周一）。未执行后续步骤。
+- **2026-06-27 21:06**: 跳过（非交易日）。Fuyao MCP 交易日历确认 2026-06-27（周六）不在交易日列表中，最后交易日 06-26（周五），下一交易日 06-29（周一）。未执行后续步骤。
+- **2026-06-27 20:10**: 跳过（非交易日）。Fuyao MCP 交易日历确认 2026-06-27（周六）不在交易日列表中，最后交易日 06-26（周五），下一交易日预计 06-29（周一）。未执行后续步骤。
+- **2026-06-27 19:14**: 跳过（非交易日）。Fuyao MCP 交易日历确认 2026-06-27（周六）不在交易日列表中，最后交易日 06-26（周五），下一交易日预计 06-29（周一）。未执行后续步骤。
+- **2026-06-27 18:18**: 跳过（非交易日）。Fuyao MCP 交易日历确认 2026-06-27（周六）不在交易日列表中，最近交易日 06-26（周五），下一交易日预计 06-29（周一）。未执行后续步骤。
+- **2026-06-27 17:23**: 跳过（非交易日）。Fuyao MCP 交易日历确认 2026-06-27（周六）不在交易日列表中，最近交易日 06-26（周五），下一交易日 06-29（周一）。未执行后续步骤。
+- **2026-06-27 16:25**: 跳过（非交易日）。Fuyao MCP 交易日历确认 2026-06-27（周六）不在交易日列表中，最后交易日 06-26（周五），下一交易日 06-29（周一）。未执行后续步骤。
+- **2026-06-27 15:30**: 跳过（非交易日）。Fuyao MCP 交易日历确认 2026-06-27（周六）不在交易日列表中，最后交易日 06-26（周五）。未执行后续步骤。
+- **2026-06-27 14:34**: 跳过（非交易日）。Fuyao MCP 交易日历确认 2026-06-27（周六）不在交易日列表中，最后交易日 06-26（周五）。未执行后续步骤。
+- **2026-06-27 13:38**: 跳过（非交易日）。Fuyao MCP 交易日历确认 2026-06-27（周六）非A股交易日，最近交易日 06-26（周五），下一交易日 06-29（周一）。未执行后续步骤。
+- **2026-06-27 12:41**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (27977 bytes)，ambush=0 sell=0, dragons=0, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
 - **2026-06-27 11:44**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (27977 bytes)，ambush=0 sell=0, dragons=0, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://f5e7030e8b12420ab708adcee49c628a.app.codebuddy.work)
 - **2026-06-27 10:47**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (27977 bytes)，ambush=0 sell=0, dragons=0, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
 - **2026-06-27 09:53**: 成功。Flask API 可达(200)，gen_live_html.py 生成 index.html (27977 bytes)，ambush=0 sell=0, dragons=0, sentiment_src=fuyao+kpl，部署至 CloudStudio (shareLink: https://6c11f531a142445b8b22fe8cbc88ad92.app.codebuddy.work)
